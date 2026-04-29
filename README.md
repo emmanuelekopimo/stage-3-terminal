@@ -68,12 +68,13 @@ insighta login
 
 ### Token Handling
 
-| Token        | Expiry    | Storage                           |
-|--------------|-----------|-----------------------------------|
-| Access token | 3 minutes | `~/.insighta/credentials.json`    |
-| Refresh token| 5 minutes | `~/.insighta/credentials.json`    |
+| Token         | Expiry    | Storage                        |
+| ------------- | --------- | ------------------------------ |
+| Access token  | 3 minutes | `~/.insighta/credentials.json` |
+| Refresh token | 5 minutes | `~/.insighta/credentials.json` |
 
 **Auto-refresh**: When the access token expires (HTTP 401), the CLI automatically:
+
 1. Calls `POST /auth/refresh` with the stored refresh token
 2. Saves the new token pair
 3. Retries the original request — transparent to the user
@@ -88,10 +89,10 @@ A request queue ensures concurrent 401 responses only trigger one refresh attemp
 
 The backend enforces two roles:
 
-| Role     | Permissions                                |
-|----------|--------------------------------------------|
-| `admin`  | Full access: list, search, create, export  |
-| `analyst`| Read-only: list, search, export only       |
+| Role      | Permissions                               |
+| --------- | ----------------------------------------- |
+| `admin`   | Full access: list, search, create, export |
+| `analyst` | Read-only: list, search, export only      |
 
 The CLI passes the access token on every request. The backend validates the token and checks the user's role. If a user attempts an action beyond their role (e.g. `analyst` calling `profiles create`), the backend returns `403 Forbidden` and the CLI displays the error clearly.
 
@@ -106,6 +107,7 @@ GET /api/profiles/search?q=<query>
 ```
 
 The backend's natural language parser interprets phrases like:
+
 - `"young males from Nigeria"` → gender=male, country=Nigeria, age_group=youth
 - `"female adults over 30"` → gender=female, min_age=30, age_group=adult
 
@@ -149,7 +151,9 @@ The backend URL is configured in `src/config.js`:
 
 ```js
 export const config = {
-  BACKEND_URL: process.env.BACKEND_URL || 'http://localhost:3000',
+  BACKEND_URL:
+    process.env.BACKEND_URL ||
+    "https://stage-1-hng-backend-production.up.railway.app",
 };
 ```
 
@@ -228,35 +232,35 @@ insighta profiles export --format csv --gender male --country NG
 
 ### `insighta profiles list`
 
-| Option        | Description                                  | Example              |
-|---------------|----------------------------------------------|----------------------|
-| `--gender`    | Filter by gender                             | `male`, `female`     |
-| `--country`   | Filter by country code or name               | `NG`, `"Nigeria"`    |
-| `--age-group` | Filter by age group                          | `adult`, `youth`     |
-| `--min-age`   | Minimum age (inclusive)                      | `25`                 |
-| `--max-age`   | Maximum age (inclusive)                      | `40`                 |
-| `--sort-by`   | Field to sort by                             | `age`, `name`        |
-| `--order`     | Sort direction (`asc` or `desc`)             | `desc`               |
-| `--page`      | Page number (default: `1`)                   | `2`                  |
-| `--limit`     | Results per page (default: `20`)             | `50`                 |
+| Option        | Description                      | Example           |
+| ------------- | -------------------------------- | ----------------- |
+| `--gender`    | Filter by gender                 | `male`, `female`  |
+| `--country`   | Filter by country code or name   | `NG`, `"Nigeria"` |
+| `--age-group` | Filter by age group              | `adult`, `youth`  |
+| `--min-age`   | Minimum age (inclusive)          | `25`              |
+| `--max-age`   | Maximum age (inclusive)          | `40`              |
+| `--sort-by`   | Field to sort by                 | `age`, `name`     |
+| `--order`     | Sort direction (`asc` or `desc`) | `desc`            |
+| `--page`      | Page number (default: `1`)       | `2`               |
+| `--limit`     | Results per page (default: `20`) | `50`              |
 
 ### `insighta profiles search`
 
-| Option    | Description              | Default |
-|-----------|--------------------------|---------|
-| `--page`  | Page number              | `1`     |
-| `--limit` | Results per page         | `20`    |
+| Option    | Description      | Default |
+| --------- | ---------------- | ------- |
+| `--page`  | Page number      | `1`     |
+| `--limit` | Results per page | `20`    |
 
 ### `insighta profiles export`
 
-| Option        | Description                     |
-|---------------|---------------------------------|
-| `--format`    | Export format — `csv` (required)|
-| `--gender`    | Filter by gender                |
-| `--country`   | Filter by country               |
-| `--age-group` | Filter by age group             |
-| `--min-age`   | Minimum age                     |
-| `--max-age`   | Maximum age                     |
+| Option        | Description                      |
+| ------------- | -------------------------------- |
+| `--format`    | Export format — `csv` (required) |
+| `--gender`    | Filter by gender                 |
+| `--country`   | Filter by country                |
+| `--age-group` | Filter by age group              |
+| `--min-age`   | Minimum age                      |
+| `--max-age`   | Maximum age                      |
 
 Exported CSV is saved to the **current working directory** as `profiles_<timestamp>.csv`.
 
@@ -264,15 +268,15 @@ Exported CSV is saved to the **current working directory** as `profiles_<timesta
 
 ## Error Handling
 
-| Scenario                          | CLI Behaviour                                     |
-|-----------------------------------|---------------------------------------------------|
-| Not logged in                     | Shows "Run `insighta login`" message              |
-| Access token expired              | Auto-refreshes silently, retries request          |
-| Refresh token expired             | Clears credentials, prompts re-login              |
-| HTTP 403 Forbidden                | Displays role-permission error                    |
-| HTTP 404 Not Found                | Displays "not found" message with the ID          |
-| Server unreachable                | Displays "Could not connect to server" message    |
-| `DEBUG=insighta` env var set      | Prints full stack traces for debugging            |
+| Scenario                     | CLI Behaviour                                  |
+| ---------------------------- | ---------------------------------------------- |
+| Not logged in                | Shows "Run `insighta login`" message           |
+| Access token expired         | Auto-refreshes silently, retries request       |
+| Refresh token expired        | Clears credentials, prompts re-login           |
+| HTTP 403 Forbidden           | Displays role-permission error                 |
+| HTTP 404 Not Found           | Displays "not found" message with the ID       |
+| Server unreachable           | Displays "Could not connect to server" message |
+| `DEBUG=insighta` env var set | Prints full stack traces for debugging         |
 
 ---
 
