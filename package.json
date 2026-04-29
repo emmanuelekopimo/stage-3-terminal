@@ -1,0 +1,36 @@
+{
+  "name": "insighta",
+  "version": "1.0.0",
+  "description": "Insighta Labs+ CLI tool for managing profiles and authentication",
+  "type": "module",
+  "bin": {
+    "insighta": "./bin/insighta.js"
+  },
+  "scripts": {
+    "start": "node bin/insighta.js",
+    "lint": "eslint src bin"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {
+    "axios": "^1.7.2",
+    "chalk": "^5.3.0",
+    "cli-table3": "^0.6.4",
+    "commander": "^12.1.0",
+    "dotenv": "^16.4.5",
+    "open": "^10.1.0",
+    "ora": "^8.0.1",
+    "uuid": "^14.0.0"
+  },
+  "devDependencies": {
+    "eslint": "^9.5.0"
+  },
+  "keywords": [
+    "cli",
+    "insighta",
+    "profiles"
+  ],
+  "author": "Insighta Labs+",
+  "license": "MIT"
+}
